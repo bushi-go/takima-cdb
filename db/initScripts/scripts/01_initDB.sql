@@ -10,19 +10,19 @@ SET search_path TO :DB_NAME;
 drop table if exists computer;
 drop table if exists company;
 create table company (
-  id                        serial,
+  cpy_id                        serial,
   name                      varchar(255),
-  constraint pk_company primary key (id))
+  constraint pk_company primary key (cpy_id))
 ;
 
 create table computer (
-  id                        serial,
+  cpt_id                        serial,
   name                      varchar(255),
   introduced                timestamp NULL,
   discontinued              timestamp NULL,
-  company_id                bigint default NULL,
-  constraint pk_computer primary key (id))
+  company_cpy_id                bigint default NULL,
+  constraint pk_computer primary key (cpt_id))
 ;
 
-alter table computer add constraint fk_computer_company_1 foreign key (company_id) references company (id) on delete restrict on update restrict;
-create index ix_computer_company_1 on computer (company_id);
+alter table computer add constraint fk_computer_company_1 foreign key (company_cpy_id) references company (cpy_id) on delete restrict on update restrict;
+create index ix_computer_company_1 on computer (company_cpy_id);
