@@ -14,11 +14,12 @@ import {MatSortModule} from '@angular/material/sort';
 import {MatTableModule} from '@angular/material/table';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { NonePipe } from './util/none.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
     TableComponent,
-    NonePipe
+    NonePipe,
   ],
   imports: [
     BrowserModule,
