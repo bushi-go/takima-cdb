@@ -1,0 +1,28 @@
+version : '3.7'
+services:
+  api-dev:
+    build: application/api/
+    ports: 
+      - "8080:8080"
+      - "8000:8000"
+    volumes:
+      - type: bind
+        source: ./application/api/src
+        target: /workspace/app/api/src
+  ui-dev:
+    build: application/ui/
+    ports:
+      - "3000:3000"
+      - "49153:49153"
+    volumes:
+      - type: bind
+        source: ./application/ui/src
+        target: /workspace/app/ui/src
+  db-dev:
+    build: db/
+    ports: 
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:
