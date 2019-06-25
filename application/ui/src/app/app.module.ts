@@ -19,7 +19,7 @@ import { NonePipe } from './util/none.pipe';
   declarations: [
     AppComponent,
     TableComponent,
-    NonePipe,
+    NonePipe
   ],
   imports: [
     BrowserModule,

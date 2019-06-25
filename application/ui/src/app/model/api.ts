@@ -5,6 +5,7 @@ export interface ApiCall {
     method: 'put'|'patch'|'post'|'get'|'delete';
     url: string;
     queryParams?: {[key: string]: any};
+    formProperties?:{name: string, required: boolean}[];
     options?: {
       body?: any;
         headers?: HttpHeaders | {

@@ -9,7 +9,12 @@ export default function mapLinkAndAffordancesToApiCalls(links: ResourceLinks, af
 
     if (affordances !== undefined && affordances !== null) {
         for (const key of Object.keys(affordances)) {
-            apiCallList.unshift({rel: 'self', method: affordances[key].method, url: links.self.href})
+            apiCallList.unshift({
+                rel: 'self',
+                method: affordances[key].method,
+                url: links.self.href,
+                formProperties: affordances[key].properties
+            });
         }
     }
     return apiCallList;

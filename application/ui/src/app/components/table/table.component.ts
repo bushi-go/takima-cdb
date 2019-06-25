@@ -9,8 +9,8 @@ import { MatSort } from '@angular/material/sort';
 import {catchError, map, startWith, switchMap, tap, expand, first} from 'rxjs/operators';
 import mapLinkAndAffordancesToApiCalls from 'src/app/util/linkUtil';
 import {mapWebCollectionToTabularData} from '../../util/resourceUtil';
-import { TabularData, Row } from 'src/app/model/tabularData';
-import { HttpHeaders } from '@angular/common/http';
+import { TabularData, Row } from 'src/app/model/tabular-data';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
@@ -22,17 +22,16 @@ import { HttpHeaders } from '@angular/common/http';
 
 export class TableComponent implements AfterViewInit {
 
-  constructor(private route: ActivatedRoute, private apiService: ApiService) {
+  constructor(private route: ActivatedRoute, private apiService: ApiService, private router: Router) {
     this.data = {header: [], rows: []};
   }
   baseApiCall: ApiCall;
   resourceApiCall: ApiCall[] = [];
   data: TabularData;
-  tableHead;
-  tablePipe;
   relation: string;
   isLoadingResults = true;
   resultsLength = 0;
+  createForm: any;
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: false}) sort: MatSort;
 
@@ -44,7 +43,7 @@ export class TableComponent implements AfterViewInit {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          this.baseApiCall.queryParams ={
+          this.baseApiCall.queryParams = {
               pageIndex: this.paginator.pageIndex,
               pageSize: this.paginator.pageSize,
               direction: this.sort.direction.toUpperCase(),
@@ -53,7 +52,7 @@ export class TableComponent implements AfterViewInit {
           return  this.apiService.callApi(this.baseApiCall);
         }),
         map((data) => {
-          if (isWebCollection(data.body)) {  
+          if (isWebCollection(data.body)) {
             this.relation = Object.keys(data.body._embedded)[0];
             this.isLoadingResults = false;
             this.resourceApiCall = mapLinkAndAffordancesToApiCalls(data.body._links, data.body._templates);
@@ -64,10 +63,13 @@ export class TableComponent implements AfterViewInit {
         catchError((err) => {
           console.log(err);
           this.isLoadingResults = false;
-          return observableOf({header:[] as string[], rows:[]as Row[]});
+          return observableOf({header: [] as string[], rows: []as Row[]});
         })
       ).subscribe(data => {
         this.data = data;
+        if (this.resourceApiCall.findIndex((apiCall) => apiCall.method === 'post') !== -1) {
+          console.log('toto');
+        }
         });
   }
 }

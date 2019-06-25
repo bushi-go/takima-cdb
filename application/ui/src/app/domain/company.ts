@@ -1,8 +1,24 @@
-export interface Company{
+import { InputType, DomainConfig } from '../model/domain-config';
+
+export interface Company {
     cpyId: number|null;
     name: string;
 }
 
-export function isCompany(object: any): object is Company {
-    return (object as Company).cpyId !== undefined ;
+export class CompanyDomain implements DomainConfig<Company> {
+    rel: 'companies';
+    model: Company;
+    properties: [
+        {
+            name: 'cpyId'
+            isId: true
+        },
+        {
+            name: 'name',
+            options: {
+                inputType: InputType.text,
+                required: true
+            }
+        }
+    ];
 }

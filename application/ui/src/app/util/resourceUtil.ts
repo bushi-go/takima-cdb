@@ -1,6 +1,6 @@
 import {Computer, Company, isCompany, isComputer} from '../domain';
 import { SingleWebResource, WebCollection } from '../model/web-resource';
-import { TabularData, Row } from '../model/tabularData';
+import { TabularData, Row } from '../model/tabular-data';
 import mapLinkAndAffordancesToApiCalls from './linkUtil';
 
 function getColumns(object: any) {
@@ -38,7 +38,6 @@ function getRowForResource(object: SingleWebResource): Row {
 export function mapWebCollectionToTabularData(collection: WebCollection): TabularData {
     const relation = Object.keys(collection._embedded)[0];
     const sample = getDataObject(collection._embedded[relation][0]);
-    debugger;
     return {
         header: getColumns(sample),
         rows: collection._embedded[relation].map(resource => getRowForResource(resource))
