@@ -40,8 +40,8 @@ public class CompanyControlerTests {
 	public void getAllShouldFetchAHalFormsEmbeddedDocument() throws Exception {
 
 		given(repository.findAll()).willReturn(Arrays.asList( //
-				new Company(1L, "Microsoft"), //
-				new Company(2L, "Takima")));
+				new Company("Microsoft"), //
+				new Company("Takima")));
 
 		mvc.perform(get("/companies").accept(MediaTypes.HAL_FORMS_JSON_VALUE)) //
 				.andDo(print()) //
@@ -94,7 +94,7 @@ public class CompanyControlerTests {
 	@Test
 	public void getOneShouldFetchASingleHalFormsDocument() throws Exception {
 
-		given(repository.findById(any())).willReturn(Optional.of(new Company(1L, "Apple")));
+		given(repository.findById(any())).willReturn(Optional.of(new Company("Apple")));
 
 		mvc.perform(get("/companies/1").accept(MediaTypes.HAL_FORMS_JSON_VALUE)) //
 				.andDo(print()) //

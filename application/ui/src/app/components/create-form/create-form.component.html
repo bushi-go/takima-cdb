@@ -1,0 +1,46 @@
+<div>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" id="form">
+      <ng-container *ngFor="let field of fields; let i=index" >
+        <ng-container [ngSwitch]="field.controlType">
+        <div *ngSwitchCase="fieldTypes.input" class="form-row">
+          <mat-form-field>
+            <mat-label>{{field.label}}</mat-label>
+            <input  matInput [formControlName]="field.key" [id]="field.key">
+          </mat-form-field>
+        </div>
+        <div *ngSwitchCase="fieldTypes.checkbox" class="form-row">
+          <mat-label>{{field.label}}</mat-label>
+            <mat-checkbox [formControlName]="field.key" [id]="field.key">{{field.label}}</mat-checkbox>
+        </div>
+        <div *ngSwitchCase="fieldTypes.select" class="form-row">
+            <mat-form-field>
+                <mat-label>{{field.label}}</mat-label>
+                <mat-select [formControlName]="field.key" [id]="field.key">
+                  <mat-option *ngFor="let option of field.refList" [value]="option">{{option.name}}</mat-option>
+                </mat-select>
+              </mat-form-field>
+        </div> 
+        <div *ngSwitchCase="fieldTypes.datePicker" class="form-row">
+            <mat-form-field>
+              <input matInput [matDatepicker]="i" [formControlName]="field.key" placeholder="{{field.label}}" [id]="field.key">
+              <mat-datepicker-toggle matSuffix [for]="i"></mat-datepicker-toggle>
+              <mat-datepicker #i></mat-datepicker>
+          </mat-form-field>
+        </div>
+          <!--<div *ngSwitchCase="'autocomplete'">
+            <mat-form-field>
+                <input type="text" matInput [formControl]="field.key" matAutocomplete="{{field.key}}-auto-key">
+                <mat-autocomplete #[attr.field.key]-auto-key="matAutocomplete">
+                    <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                      {{option}}
+                    </mat-option>
+                  </mat-autocomplete>
+            </mat-form-field>-->
+      </ng-container>
+    </ng-container>
+  </form>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button type="submit" form="form">Save</button>
+  </div>
+</div>

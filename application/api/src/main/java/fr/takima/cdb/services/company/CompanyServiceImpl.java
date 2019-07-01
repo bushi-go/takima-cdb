@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.takima.cdb.model.company.Company;
 import fr.takima.cdb.model.company.CompanyRepository;
@@ -14,6 +15,7 @@ import fr.takima.cdb.services.company.exceptions.CompanyNotFoundException;
  * Company Service bean
  */
 @Service
+@Transactional
 class CompanyServiceImpl implements CompanyService {
 
     private CompanyRepository companyRepo;
@@ -23,12 +25,12 @@ class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public List<Company> getAllCompanys() {
+    public List<Company> getAllCompanies() {
         return companyRepo.findAll();
     }
 
     @Override
-    public Page<Company> getCompanys(Pageable pageRequest) {
+    public Page<Company> getCompanies(Pageable pageRequest) {
         return companyRepo.findAll(pageRequest);
     }
 

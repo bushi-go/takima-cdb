@@ -3,6 +3,7 @@ package fr.takima.cdb.controlers.computer;
 // Lib : Java
 import java.util.Optional;
 import java.util.Collections;
+import java.util.List;
 
 // Lib : Spring
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
@@ -50,6 +51,24 @@ public class ComputerControler {
         this.computerModelAssembler = computerModelAssembler;
         this.computerService = computerService;
     }
+
+    @GetMapping(value="/computers")
+    public ResponseEntity<CollectionModel<EntityModel<Computer>>> getComputers() {
+
+        Link link = linkTo(methodOn(ComputerControler.class).getComputers()).withSelfRel().andAffordance(
+                "createComputer", HttpMethod.POST, ResolvableType.forClass(Computer.class),
+                Collections.<QueryParameter>emptyList(),
+                ResolvableType.forClassWithGenerics(ResponseEntity.class,
+                        ResolvableType.forClassWithGenerics(EntityModel.class, Computer.class)));
+
+        List<Computer> list = computerService.getAllComputers();    
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-TOTAL-COUNT", String.valueOf(list.size()));
+
+        return new ResponseEntity<CollectionModel<EntityModel<Computer>>>(computerModelAssembler.toCollectionModel(list)
+        .add(link), headers, HttpStatus.OK);
+        }
+
     /**
      * Return a pageable list of computers resource
      * @param int pageIndex

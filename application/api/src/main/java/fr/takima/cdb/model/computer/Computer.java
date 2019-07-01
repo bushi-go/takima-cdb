@@ -4,18 +4,32 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
+import javax.persistence.SequenceGenerator;
+import javax.validation.constraints.Null;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import fr.takima.cdb.model.company.Company;
 
@@ -25,25 +39,25 @@ import fr.takima.cdb.model.company.Company;
 @Data
 @Entity
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Computer {
 
-    private @Id @GeneratedValue Long cptId;
-    private String name;
-    @Basic(optional=true)
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private LocalDate introduced;
-    @Basic(optional=true)
-    @JsonFormat(pattern="yyyy-MM-dd")
-    private LocalDate discontinued;
-    @ManyToOne(optional=false) @MapsId("cpy_id")
-    private Company company;
+  private @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "computer_gen") @SequenceGenerator(name = "computer_gen", sequenceName = "computer_seq", allocationSize = 1) Long cptId;
+  @NonNull
+  private String name;
+  @Basic(optional = true)
+  private ZonedDateTime introduced;
+  @Basic(optional=true)
+  private ZonedDateTime discontinued;
+  @ManyToOne
+  @JoinColumn(name="company_cpy_id", nullable =true)
+  private Company company;
 
    Computer(String name, Company company){
     this.name=name;
     this.company=company;
   }
-   Computer(String name, LocalDate introduced, LocalDate discontinued, Company company) {
+   Computer(String name, ZonedDateTime introduced, ZonedDateTime discontinued, Company company) {
     this.name = name;
     this.introduced = introduced;
     this.discontinued = discontinued;

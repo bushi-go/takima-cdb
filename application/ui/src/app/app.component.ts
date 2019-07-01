@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
-import { ApiService } from './components/service/api.service';
+
+import { ApiService } from './components/service/api/api.service';
 import { Router} from '@angular/router';
 import { TableComponent } from './components/table/table.component';
 import { ApiCall } from './model/api';
 import { environment } from 'src/environments/environment';
-import {Computer, Company} from './domain';
+
 
 import _ from 'lodash';
 import mapLinkAndAffordancesToApiCalls from './util/linkUtil';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,7 +22,7 @@ export class AppComponent {
   stats: any;
   constructor(private apiService: ApiService, private router: Router) {
     this.navLinks = [];
-    const baseApiCall: ApiCall = {rel:"",method: 'get', url: environment.apiUrl};
+    const baseApiCall: ApiCall = {rel: "", method: 'get', url: environment.apiUrl};
     this.apiService.callApi(baseApiCall).subscribe((data: any) => {
       this.stats = {computersCount : data.body.computersCount, companyCount: data.body.computersCount};
       const apiCalls = mapLinkAndAffordancesToApiCalls(data.body._links);
@@ -30,9 +32,11 @@ export class AppComponent {
               component: TableComponent,
               data: { apiCalls: call }
             });
-        if(call.rel!=='self'){
+
+        if (call.rel !== 'self') {
           this.navLinks.unshift({path: call.rel, label: call.rel.toUpperCase()});
         }
+
         });
     });
   }

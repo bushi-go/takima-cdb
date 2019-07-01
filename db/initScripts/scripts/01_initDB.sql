@@ -15,6 +15,8 @@ create table company (
   constraint pk_company primary key (cpy_id))
 ;
 
+create SEQUENCE company_seq INCREMENT BY 1 START 43 OWNED BY company.cpy_id;
+
 create table computer (
   cpt_id                        serial,
   name                      varchar(255),
@@ -23,6 +25,8 @@ create table computer (
   company_cpy_id                bigint default NULL,
   constraint pk_computer primary key (cpt_id))
 ;
+
+create SEQUENCE computer_seq INCREMENT BY 1 START 574 OWNED BY computer.cpt_id;
 
 alter table computer add constraint fk_computer_company_1 foreign key (company_cpy_id) references company (cpy_id) on delete restrict on update restrict;
 create index ix_computer_company_1 on computer (company_cpy_id);

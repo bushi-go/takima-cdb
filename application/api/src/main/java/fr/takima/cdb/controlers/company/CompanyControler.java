@@ -8,6 +8,7 @@ import java.util.Collections;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import org.springframework.core.ResolvableType;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -16,7 +17,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.QueryParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,7 +54,18 @@ public class CompanyControler {
         this.companyModelAssembler = companyModelAssembler;
         this.companyService = companyService;
     }
+    @GetMapping(value="/companies")
+    public ResponseEntity<CollectionModel<EntityModel<Company>>> getCompanies() {
 
+        Link link = linkTo(methodOn(CompanyControler.class).getCompanies()).withSelfRel().andAffordance(
+                "createCompany", HttpMethod.POST, ResolvableType.forClass(Company.class),
+                Collections.<QueryParameter>emptyList(),
+                ResolvableType.forClassWithGenerics(ResponseEntity.class,
+                        ResolvableType.forClassWithGenerics(EntityModel.class, Company.class)));
+
+            return ResponseEntity.ok(companyModelAssembler.toCollectionModel(companyService.getAllCompanies())
+            .add(link));
+        }
     /**
      * Return a pageable list of companies   
      * @param int pageIndex
@@ -71,14 +84,20 @@ public class CompanyControler {
                 pageRequestOption=PageRequest.of(pageIndex, pageSize,DEFAULT_SORT_DIRECTION,DEFAULT_SORT_BY);
         }
 
-        Link link = linkTo(methodOn(CompanyControler.class).getCompanies(pageRequestOption.getPageNumber(),pageRequestOption.getPageSize(), DEFAULT_SORT_DIRECTION,DEFAULT_SORT_BY)).withSelfRel().andAffordance(
-                "createCompany", HttpMethod.POST, ResolvableType.forClass(Company.class),
+        Link link = linkTo(methodOn(CompanyControler.class)
+                .getCompanies(pageRequestOption.getPageNumber(),pageRequestOption.getPageSize(), DEFAULT_SORT_DIRECTION,DEFAULT_SORT_BY))
+                .withSelfRel()
+                .andAffordance("createCompany", HttpMethod.POST, ResolvableType.forClass(Company.class),
                 Collections.<QueryParameter>emptyList(),
                 ResolvableType.forClassWithGenerics(ResponseEntity.class,
                         ResolvableType.forClassWithGenerics(EntityModel.class, Company.class)));
+        Page<Company> page = companyService.getCompanies(pageRequestOption);
+        // TODO : Pass total count and other pagination metadata through a paginated CollectionModel subclass
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-TOTAL-COUNT", String.valueOf(page.getTotalElements()));
+        return new ResponseEntity<CollectionModel<EntityModel<Company>>> (companyModelAssembler.toCollectionModel(page)
+        .add(link), headers, HttpStatus.OK);
 
-            return ResponseEntity.ok(companyModelAssembler.toCollectionModel(companyService.getCompanys(pageRequestOption))
-            .add(link));
         }
 
     /**

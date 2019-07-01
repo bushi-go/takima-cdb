@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.takima.cdb.model.computer.Computer;
 import fr.takima.cdb.model.computer.ComputerRepository;
@@ -16,6 +17,7 @@ import fr.takima.cdb.services.computer.specifications.ComputerDateSpecification;
  * Computer Service bean
  */
 @Service
+@Transactional
 class ComputerServiceImpl implements ComputerService {
 
     private ComputerRepository computerRepo;

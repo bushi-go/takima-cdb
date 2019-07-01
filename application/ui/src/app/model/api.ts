@@ -1,17 +1,18 @@
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 export interface ApiCall {
-    rel: string;
+    rel?: string;
     method: 'put'|'patch'|'post'|'get'|'delete';
     url: string;
     queryParams?: {[key: string]: any};
+    formProperties?:{name: string, required: boolean}[];
     options?: {
       body?: any;
         headers?: HttpHeaders | {
             [header: string]: string | string[];
         };
         reportProgress?: boolean;
-        observe: 'response';
+        observe?: 'response';
         params?: HttpParams | {
             [param: string]: string | string[];
         };
