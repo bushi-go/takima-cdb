@@ -25,12 +25,15 @@
             "aot": false,
             "assets": [
               "src/favicon.ico",
+              "src/assets/icons",
               "src/assets"
             ],
             "styles": [
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/hammerjs/hammer.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -89,12 +92,15 @@
             "karmaConfig": "karma.conf.js",
             "assets": [
               "src/favicon.ico",
+              "src/assets/icons",
               "src/assets"
             ],
             "styles": [
               "src/styles.less"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/hammerjs/hammer.min.js"
+            ]
           }
         },
         "lint": {

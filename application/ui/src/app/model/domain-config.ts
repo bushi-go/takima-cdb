@@ -1,33 +1,34 @@
-export interface DomainConfig<T> {
+import { InputType, FieldType } from './field';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+    providedIn: 'root'
+  })
+export class DomainConfig<T> {
+    constructor(rel: string, empty: () => T, properties: PropertyConfig[]) {
+        this.model = empty();
+        this.properties = properties;
+        this.rel = rel;
+        this.refList = {};
+    }
+    refList?: {[key: string]: any[]};
     properties: PropertyConfig[];
     rel: string;
     model: T;
-    validate?: (value: T ) => boolean;
+    validate: () => boolean;
 }
 
 export interface PropertyConfig {
     name: string;
     isId?: boolean;
     options?: {
+        label: string;
         required: boolean;
-        inputType: InputType
-        autoComplete?: boolean,
-        referenceListRel?: string
+        fieldType: FieldType;
+        inputType?: InputType;
+         referenceListUri?: string;
+         refRel?:string;
     }|undefined;
 }
 
-export enum InputType {
-'color',
-'date',
-'datetime-local',
-'email',
-'month',
-'number',
-'password',
-'search',
-'tel',
-'text',
-'time',
-'url',
-'week'
-}
+

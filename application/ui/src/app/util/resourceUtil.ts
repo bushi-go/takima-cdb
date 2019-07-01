@@ -1,15 +1,13 @@
-import {Computer, Company, isCompany, isComputer} from '../domain';
+import {isCompany, getDomainConfigFor} from '../domain';
 import { SingleWebResource, WebCollection } from '../model/web-resource';
 import { TabularData, Row } from '../model/tabular-data';
 import mapLinkAndAffordancesToApiCalls from './linkUtil';
+import { ApiCall } from '../model/api';
 
 function getColumns(object: any) {
-    if (isCompany(object)) {
-        return ['name'];
-    }
-    if (isComputer(object)) {
-        return ['name', 'introduced', 'discontinued', 'company'];
-    }
+    const domain = getDomainConfigFor(object);
+    const columns = domain.properties.filter(prop => !prop.isId).map(prop => prop.name);
+    return columns;
 }
 
 function getDisplayForNestedObjec(object: any ): string {
@@ -28,11 +26,31 @@ function getDataObject(object: SingleWebResource) {
     return dto;
 }
 
+function getIconForCall(op: ApiCall): string {
+    switch (op.method) {
+        case 'post':
+            return 'add';
+        case 'put':
+            return 'import_export';
+        case 'patch':
+            return 'create';
+        case 'delete':
+            return 'delete';
+    }
+}
+
 function getRowForResource(object: SingleWebResource): Row {
     return {
         data: getDataObject(object),
-        operation : mapLinkAndAffordancesToApiCalls(object._links, object._templates)
+        operations : mapLinkAndAffordancesToApiCalls(object._links, object._templates).map(op => {
+            return { call: op, icon: getIconForCall(op)};
+        })
     };
+}
+
+export function toDataObjectList(collection: WebCollection): any[] {
+    const relation = Object.keys(collection._embedded)[0];
+    return collection._embedded[relation].map(getDataObject);
 }
 
 export function mapWebCollectionToTabularData(collection: WebCollection): TabularData {
@@ -40,6 +58,7 @@ export function mapWebCollectionToTabularData(collection: WebCollection): Tabula
     const sample = getDataObject(collection._embedded[relation][0]);
     return {
         header: getColumns(sample),
-        rows: collection._embedded[relation].map(resource => getRowForResource(resource))
+        rows: collection._embedded[relation].map(resource => getRowForResource(resource)),
+        filter: null
     };
 }

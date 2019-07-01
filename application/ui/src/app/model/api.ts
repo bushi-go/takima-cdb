@@ -1,7 +1,7 @@
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 export interface ApiCall {
-    rel: string;
+    rel?: string;
     method: 'put'|'patch'|'post'|'get'|'delete';
     url: string;
     queryParams?: {[key: string]: any};
@@ -12,7 +12,7 @@ export interface ApiCall {
             [header: string]: string | string[];
         };
         reportProgress?: boolean;
-        observe: 'response';
+        observe?: 'response';
         params?: HttpParams | {
             [param: string]: string | string[];
         };

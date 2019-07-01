@@ -1,24 +1,29 @@
-import { InputType, DomainConfig } from '../model/domain-config';
+import {DomainConfig } from '../model/domain-config';
+import {InputType, FieldType} from '../model/field';
+export class Company {
+    constructor() {
 
-export interface Company {
+    }
     cpyId: number|null;
     name: string;
 }
-
-export class CompanyDomain implements DomainConfig<Company> {
-    rel: 'companies';
-    model: Company;
-    properties: [
-        {
-            name: 'cpyId'
-            isId: true
-        },
-        {
-            name: 'name',
-            options: {
-                inputType: InputType.text,
-                required: true
-            }
+const companyProperties = [
+    {
+        name: 'cpyId',
+        isId: true
+    },
+    {
+        name: 'name',
+        options: {
+            label: 'Name',
+            fieldType: FieldType.input,
+            inputType: InputType.text,
+            required: true
         }
-    ];
+    }
+];
+export class CompanyDomain extends DomainConfig<Company> {
+    constructor() {
+        super('companies', () => new Company(), companyProperties);
+    }
 }
