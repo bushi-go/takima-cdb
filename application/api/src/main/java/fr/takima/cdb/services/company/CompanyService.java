@@ -15,13 +15,13 @@ public interface CompanyService {
      * Get the full, exhaustive list of all Companys
      * @return
      */
-    List<Company> getAllCompanys();
+    List<Company> getAllCompanies();
 
     /**
      * Get a subset, optionnaly sorted, of all Companys
      * @return
      */
-    Page<Company> getCompanys(Pageable pageRequest);
+    Page<Company> getCompanies(Pageable pageRequest);
 
     /**
      * Fetch a Company by its id

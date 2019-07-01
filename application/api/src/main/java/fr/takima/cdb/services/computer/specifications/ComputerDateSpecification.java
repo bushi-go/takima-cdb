@@ -11,6 +11,9 @@ public class ComputerDateSpecification implements Specification<Computer>{
 
 	@Override
 	public boolean isSatisfiedBy(Computer entity) {
+		if(entity.getIntroduced()!=null && entity.getDiscontinued()!=null){
 		return entity.getIntroduced().isBefore(entity.getDiscontinued());
+		}
+		return true;
 	} 
 }
