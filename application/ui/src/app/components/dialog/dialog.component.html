@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>{{data.rel}}</h1>
+<h1 mat-dialog-title>{{title}}</h1>
 <div mat-dialog-content>
-  <app-create-form [data]="data" (saved)="onSave($event)" (cancel)="onCancel($event)"></app-create-form>
+  <app-create-form [data]="data" (saved)="onSave($event)" (cancel)="onCancel($event)" (errorOnAction)="onErrorOnAction($event)"></app-create-form>
 </div>

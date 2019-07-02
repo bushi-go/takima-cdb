@@ -17,6 +17,7 @@ import { DialogComponent } from '../dialog/dialog.component';
 import { DomainConfig } from 'src/app/model/domain-config';
 import { MatTableDataSource } from '@angular/material/table';
 import { trigger, state, transition, style, animate } from '@angular/animations';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-table',
@@ -34,26 +35,26 @@ import { trigger, state, transition, style, animate } from '@angular/animations'
 
 export class TableComponent implements AfterViewInit {
 
-  constructor(public dialog: MatDialog, private route: ActivatedRoute, private apiService: ApiService, private router: Router) {
+  constructor(public dialog: MatDialog, private route: ActivatedRoute, private apiService: ApiService, private snackBar: MatSnackBar) {
   }
   domainConfig: DomainConfig<any>;
   hasForm = false;
   baseApiCall: ApiCall;
   resourceApiCall: ApiCall[] = [];
   displayedColumn: string[];
-  displayedColumnWithActions: string[]=['actions-col'];
+  displayedColumnWithActions: string[] = ['actions-col'];
   dataSource: MatTableDataSource<any>;
   relation: string;
   isLoadingResults = true;
   resultsLength = 0;
   createForm: any;
+  stickyHeader = false;
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: false }) sort: MatSort;
 
   ngAfterViewInit() {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
     this.route.data.subscribe((data) => { this.baseApiCall = data.apiCalls; });
-    this.onAction
     merge(this.route.data, this.sort.sortChange, this.paginator.page)
       .pipe(
         startWith({}),
@@ -88,7 +89,7 @@ export class TableComponent implements AfterViewInit {
             }
             this.resultsLength = Number.parseInt(data.headers.get('X-TOTAL-COUNT'), 10);
             return mapWebCollectionToTabularData(data.body);
-          };
+          }
         }),
         catchError((err) => {
           console.log(err);
@@ -96,19 +97,20 @@ export class TableComponent implements AfterViewInit {
           return observableOf({ header: [] as string[], rows: [] as Row[] });
         })
       ).subscribe(data => {
-        debugger;
+
         this.dataSource = new MatTableDataSource(data.rows);
         this.displayedColumn = data.header;
-        if(this.displayedColumnWithActions.length === 1){
+        if (this.displayedColumnWithActions.length === 1) {
           this.displayedColumnWithActions.push(...data.header);
         }
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
         this.dataSource.filterPredicate = this.filterData;
         this.hasForm = true;
+        this.stickyHeader = true;
       });
   }
-  filterData(data: Row, filterValue: string){
+  filterData(data: Row, filterValue: string) {
     return Object.values(data.data).join(',').toLowerCase().indexOf(filterValue) !== -1;
   }
   applyFilter(filterValue: string) {
@@ -118,23 +120,30 @@ export class TableComponent implements AfterViewInit {
       this.dataSource.paginator.firstPage();
     }
   }
-  onAction(action:any){
-    this.paginator._changePageSize(this.paginator.pageSize); 
+  onAction(action: any) {
+    if (action !== 'cancel') {
+    this.paginator._changePageSize(this.paginator.pageSize);
+    }
   }
-  openDialog(data:{data:any, call:ApiCall, mode:string}): void {
-    const dialogLoad = {form: this.domainConfig, call: this.resourceApiCall.find((apiCall) => apiCall.method === 'post'), mode:'create'};
-    if(data){
+  openDialog(data: {data: any, call: ApiCall, mode: string}): void {
+    const dialogLoad = {form: this.domainConfig, call: this.resourceApiCall.find((apiCall) => apiCall.method === 'post'), mode: 'create'};
+    if (data) {
       this.domainConfig.model = data.data;
       dialogLoad.form.model = data.data;
       dialogLoad.call = data.call;
       dialogLoad.mode = data.mode;
     }
     const dialogRef = this.dialog.open(DialogComponent, {
-      width: '250px',
-      data: dialogLoad 
+      width: '350px',
+      data: dialogLoad
     });
-    dialogRef.afterClosed().subscribe((result) => {
-      this.paginator._changePageSize(this.paginator.pageSize); 
+    dialogRef.afterClosed().subscribe((result: string) => {
+
+      if (result !== 'cancel' && result === 'error') {
+        this.paginator._changePageSize(this.paginator.pageSize);
+      } else if (result === 'error') {
+        this.snackBar.open('Une erreur a lieu');
+      }
     });
   }
 }

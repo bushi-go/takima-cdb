@@ -39,11 +39,24 @@ function getIconForCall(op: ApiCall): string {
     }
 }
 
+function getLabelForCall(op: ApiCall): string {
+    switch (op.method) {
+        case 'post':
+            return 'Create';
+        case 'put':
+            return 'Replace';
+        case 'patch':
+            return 'Update';
+        case 'delete':
+            return 'Delete';
+    }
+}
+
 function getRowForResource(object: SingleWebResource): Row {
     return {
         data: getDataObject(object),
         operations : mapLinkAndAffordancesToApiCalls(object._links, object._templates).map(op => {
-            return { call: op, icon: getIconForCall(op)};
+            return { call: op, icon: getIconForCall(op), label: getLabelForCall(op)};
         })
     };
 }

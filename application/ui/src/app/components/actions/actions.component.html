@@ -5,6 +5,7 @@
 <mat-menu #menu="matMenu">
   <button *ngFor="let op of operations" mat-menu-item (click)="onAction(op.call)">
     <mat-icon>{{op.icon}}</mat-icon>
+    <mat-label>{{op.label}}</mat-label>
   </button>
 </mat-menu>
 </div>

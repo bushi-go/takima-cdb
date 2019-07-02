@@ -1,0 +1,38 @@
+<div class="dashboard-container">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <div mat-card-avatar class="example-header-image"></div>
+      <mat-card-title>Computers and companies Statistics</mat-card-title>
+      <mat-card-subtitle>Some numbers about what's in store</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-list>
+        <mat-list-item>Computers in stock : {{homeStats.computersCount}}</mat-list-item>
+        <mat-list-item>From {{homeStats.companiesCount}} companies</mat-list-item>
+      </mat-list> 
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="example-card">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title>Computers by company Statistics</mat-card-title>
+        <mat-card-subtitle>Looks like a type-A classification problem </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+          <mat-grid-list [cols]="mean" rowHeight="100px">
+              <mat-grid-tile
+                  *ngFor="let tile of homeStats.computerCountByCompany"
+                  [colspan]="3"
+                  [rowspan]="1"
+                  color='primary'
+                  gutterSize='3px'
+                >
+                <div class="stat-container">
+                  <div>{{tile.name}}</div>
+                  <div>Computers : {{tile.value}}</div>
+                </div>
+              </mat-grid-tile>
+            </mat-grid-list>
+      </mat-card-content>
+    </mat-card>
+</div>

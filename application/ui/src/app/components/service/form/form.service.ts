@@ -2,9 +2,7 @@ import { Injectable } from '@angular/core';
 import { DomainConfig } from 'src/app/model/domain-config';
 import { Field, FieldType, InputType } from 'src/app/model/field';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
-import { ApiService } from './api/api.service';
-import { toDataObjectList } from 'src/app/util/resourceUtil';
-import { isWebCollection } from 'src/app/model/web-resource';
+import { ApiService } from '../api/api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,13 +39,13 @@ export class FormService {
     }});
     return fieldList;
   }
-  toFormGroup(fields: Field[]){
-    
-    const form:any = {};
-    fields.forEach(field =>{
-      
+  toFormGroup(fields: Field[]) {
+
+    const form: any = {};
+    fields.forEach(field => {
+
       form[field.key] = field.required ? new FormControl(field.value || '', Validators.required) : new FormControl(field.value || '');
-    }); 
-      return this.formBuilder.group(form);
+    });
+    return this.formBuilder.group(form);
   }
 }

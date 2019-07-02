@@ -29,7 +29,13 @@ import {MatIconModule} from '@angular/material/icon';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import {MatButtonModule} from '@angular/material/button';
 import { ActionsComponent } from './components/actions/actions.component';
-
+import { FooterComponent } from './components/footer/footer.component';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { RouterModule } from '@angular/router';
+import {MatCardModule} from '@angular/material/card';
+import {MatListModule} from '@angular/material/list';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 const MY_FORMATS = {
   parse: {
     dateInput: 'YYYY-MM-DD',
@@ -42,15 +48,26 @@ const MY_FORMATS = {
   },
 };
 
+const appRoutes = [
+  {path: 'dashboard', component: DashboardComponent},
+  {path: '**', redirectTo: ''}
+];
+
 @NgModule({
   declarations: [
     AppComponent,
     TableComponent,
     CreateFormComponent,
     DialogComponent,
-    ActionsComponent
+    ActionsComponent,
+    FooterComponent,
+    DashboardComponent,
+
   ],
   imports: [
+    RouterModule.forRoot( appRoutes),
+    MatCardModule,
+    MatListModule,
     CommonModule,
     BrowserModule,
     AppRoutingModule,
@@ -73,7 +90,9 @@ const MY_FORMATS = {
     MatDatepickerModule,
     MatMomentDateModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatGridListModule,
+    MatSnackBarModule
   ],
   entryComponents: [
     TableComponent,

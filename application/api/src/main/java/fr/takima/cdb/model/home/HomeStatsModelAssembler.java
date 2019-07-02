@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import fr.takima.cdb.controlers.company.CompanyControler;
 // Components
 import fr.takima.cdb.controlers.computer.ComputerControler;
-import fr.takima.cdb.controlers.home.HomeControler;
+import fr.takima.cdb.controlers.home.HomeRestControler;
 
 /**
  * Mapper to transform Computer data object into Computer web resource
@@ -25,7 +25,7 @@ public class HomeStatsModelAssembler implements RepresentationModelAssembler<Hom
     @Override
     public EntityModel<HomeStats> toModel(HomeStats homeStats) {
         return new EntityModel<>(homeStats,
-            linkTo(methodOn(HomeControler.class).getHomeStats()).withSelfRel(),
+            linkTo(methodOn(HomeRestControler.class).getHomeStats()).withSelfRel(),
             linkTo(methodOn(ComputerControler.class).getComputers(DEFAULT_PAGE_INDEX,DEFAULT_PAGE_SIZE,DEFAULT_SORT_DIRECTION, DEFAULT_SORT_BY)).withRel("computers"),
             linkTo(methodOn(CompanyControler.class).getCompanies(DEFAULT_PAGE_INDEX,DEFAULT_PAGE_SIZE,DEFAULT_SORT_DIRECTION, DEFAULT_SORT_BY)).withRel("companies")
             );

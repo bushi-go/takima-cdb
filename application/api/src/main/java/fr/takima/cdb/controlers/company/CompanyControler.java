@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,6 +42,7 @@ import fr.takima.cdb.services.company.CompanyService;
  * Controller rest for Company API
  */
 @RestController
+@RequestMapping("/api")
 public class CompanyControler {
     private static Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.DESC;
     private static String DEFAULT_SORT_BY = "name";
@@ -54,7 +56,7 @@ public class CompanyControler {
         this.companyModelAssembler = companyModelAssembler;
         this.companyService = companyService;
     }
-    @GetMapping(value="/companies")
+    @GetMapping(value="companies")
     public ResponseEntity<CollectionModel<EntityModel<Company>>> getCompanies() {
 
         Link link = linkTo(methodOn(CompanyControler.class).getCompanies()).withSelfRel().andAffordance(
@@ -75,7 +77,7 @@ public class CompanyControler {
      *         consisting in a collection of company resources 
      *         and aggregate root
      */
-    @GetMapping(value="/companies", params={"pageIndex", "pageSize", "direction"})
+    @GetMapping(value="companies", params={"pageIndex", "pageSize", "direction"})
     public ResponseEntity<CollectionModel<EntityModel<Company>>> getCompanies(@RequestParam int pageIndex,@RequestParam int pageSize, @RequestParam(required = false) Sort.Direction direction, @RequestParam(required = false) String sortBy ) {
         Pageable pageRequestOption;
         if(Optional.ofNullable(direction).isPresent() && Optional.ofNullable(sortBy).isPresent()){

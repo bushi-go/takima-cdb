@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,6 +41,7 @@ import fr.takima.cdb.services.computer.ComputerService;
 
 
 @RestController
+@RequestMapping("/api")
 public class ComputerControler {
         private static Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.DESC;
         private static String DEFAULT_SORT_BY = "name";

@@ -5,21 +5,26 @@
   </div>
  
   <div class="table-container" >
-  <mat-toolbar>
-      <span>
-        <mat-form-field>
-          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-        </mat-form-field>
-      </span>
-      <span class="fill-remaining-space"></span>
-      <span  *ngIf="hasForm">
-        <button mat-fab color="primary" (click)="openDialog()">
-          <mat-icon>add</mat-icon>
-        </button>
-      </span>
-    </mat-toolbar>
+ 
     <table mat-table [dataSource]="dataSource" class="table"
            matSort matSortDirection="desc">
+      <ng-container matColumnDef="filter-header">
+          <th mat-header-cell [attr.colspan]="displayedColumnWithActions.length" *matHeaderCellDef >
+          <div class="table-toolbar">
+              <span>
+              <mat-form-field [style.fontSize.px]="14">
+                  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+                </mat-form-field>
+              </span>
+              <span class="fill-remaining-space"></span>
+              <span  *ngIf="hasForm">
+                <button mat-raised-button color="primary" (click)="openDialog()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </span>
+            </div>
+          </th>
+      </ng-container>
       <ng-container *ngFor="let col of displayedColumn" [matColumnDef]="col">
           <th mat-header-cell mat-sort-header *matHeaderCellDef>{{col.toUpperCase()}}</th>
           <td mat-cell *matCellDef="let row">{{row.data[col]}}</td>
@@ -28,8 +33,9 @@
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let row"><app-actions [input]="row" (action)="onAction($event)" (dialog)="openDialog($event)"></app-actions></td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumnWithActions"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumnWithActions;"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumnWithActions; sticky: stickyHeader"></tr>
+      <tr mat-header-row *matHeaderRowDef="['filter-header'];sticky: stickyHeader"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumnWithActions "></tr>
     </table>
   </div>
   

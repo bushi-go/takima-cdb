@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../service/api/api.service';
 import { DomainConfig } from 'src/app/model/domain-config';
-import { FormBuilder, FormGroup, Validators  } from '@angular/forms';
-import { FormService } from '../service/form.service';
+import { FormGroup } from '@angular/forms';
+import { FormService } from '../service/form/form.service';
 import { Field, FieldType } from 'src/app/model/field';
 import { ApiCall } from 'src/app/model/api';
+import { map, catchError } from 'rxjs/operators';
+import {of as observableOf} from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-form',
@@ -17,6 +19,7 @@ export class CreateFormComponent implements OnInit {
   @Input() data: {form: DomainConfig<any>, call: ApiCall};
   @Output() saved: EventEmitter<any> = new EventEmitter();
   @Output() cancel: EventEmitter<any> = new EventEmitter();
+  @Output() errorOnAction: EventEmitter<any> = new EventEmitter();
   fields: Field[];
   form: FormGroup;
   save: ApiCall;
@@ -33,11 +36,21 @@ export class CreateFormComponent implements OnInit {
     const result = this.form.value;
     this.save.options = {body: result, headers: {
     'content-type': 'application/json'}};
-    this.apiService.callApi(this.save).subscribe((callResult) => {
-      this.saved.emit('saved ' + JSON.stringify(callResult.body));
+    this.apiService.callApi(this.save).pipe(
+      map(data => {
+        return data;
+      }),
+      catchError(err => {
+        this.errorOnAction.emit(err);
+        return observableOf(new HttpResponse());
+      }
+    )).subscribe((callResult) => {
+      if (callResult) {
+        this.saved.emit('saved ' + JSON.stringify(callResult.body));
+      }
     });
   }
   onCancel() {
-    this.cancel.emit();
+    this.cancel.emit('cancel');
   }
 }

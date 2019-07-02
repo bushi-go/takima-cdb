@@ -11,30 +11,30 @@ import { Router } from '@angular/router';
   styleUrls: ['./actions.component.less']
 })
 export class ActionsComponent implements OnInit {
-  @Input() input:Row;
+  @Input() input: Row;
   @Output() action: EventEmitter<any> = new EventEmitter();
   @Output() dialog: EventEmitter<any> = new EventEmitter();
-  data:any;
-  operations:{call:ApiCall, icon:string}[];
-  navigateLinks: {call:ApiCall, icon:string}[];
-  constructor(private apiService: ApiService, private router:Router) { 
+  data: any;
+  operations: {call: ApiCall, icon: string, label?: string}[];
+  navigateLinks: {call: ApiCall, icon: string}[];
+  constructor(private apiService: ApiService) {
 
   }
 
   ngOnInit() {
     this.data = this.input.data;
-    this.operations = this.input.operations.filter(op => op.call.method!=='get');
+    this.operations = this.input.operations.filter(op => op.call.method !== 'get');
   }
-  onAction(operation:ApiCall){
-    switch(operation.method){
+  onAction(operation: ApiCall) {
+    switch (operation.method) {
       case 'put':
-        this.openDialog({data: this.data, call:operation, mode:'replace'});
+        this.openDialog({data: this.data, call: operation, mode: 'replace'});
         break;
       case 'patch':
         this.openDialog('update');
         break;
       case 'delete':
-        debugger;
+
         this.apiService.callApi(operation).subscribe((data => {
           this.action.emit('deleted');
         }));
