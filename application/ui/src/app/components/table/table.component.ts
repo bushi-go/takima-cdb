@@ -88,8 +88,6 @@ export class TableComponent implements AfterViewInit {
                 }
               });
             }
-            debugger;
-
             return data;
           }
         }),
