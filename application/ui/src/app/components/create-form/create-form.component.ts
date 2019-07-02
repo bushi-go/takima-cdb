@@ -41,12 +41,15 @@ export class CreateFormComponent implements OnInit {
         return data;
       }),
       catchError(err => {
-        this.errorOnAction.emit(err);
-        return observableOf(new HttpResponse());
+        return observableOf(err);
       }
     )).subscribe((callResult) => {
-      if (callResult) {
+      
+      if (callResult && !callResult.error) {
         this.saved.emit('saved ' + JSON.stringify(callResult.body));
+      }else{
+        
+        this.errorOnAction.emit(JSON.stringify('Error : ' + callResult.error.message));
       }
     });
   }

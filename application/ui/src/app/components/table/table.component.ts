@@ -59,6 +59,7 @@ export class TableComponent implements AfterViewInit {
       .pipe(
         startWith({}),
         switchMap(() => {
+          this.stickyHeader = false;
           this.isLoadingResults = true;
           this.baseApiCall.queryParams = {
             pageIndex: this.paginator.pageIndex,
@@ -87,28 +88,33 @@ export class TableComponent implements AfterViewInit {
                 }
               });
             }
-            this.resultsLength = Number.parseInt(data.headers.get('X-TOTAL-COUNT'), 10);
-            return mapWebCollectionToTabularData(data.body);
+            debugger;
+
+            return data;
           }
         }),
         catchError((err) => {
           console.log(err);
           this.isLoadingResults = false;
-          return observableOf({ header: [] as string[], rows: [] as Row[] });
+          return observableOf(err);
         })
       ).subscribe(data => {
-
-        this.dataSource = new MatTableDataSource(data.rows);
-        this.displayedColumn = data.header;
+        if (!data.error) {
+        this.resultsLength = Number.parseInt(data.headers.get('X-TOTAL-COUNT'), 10);
+        
+        const dataTab = mapWebCollectionToTabularData(data.body);
+        this.dataSource = new MatTableDataSource(dataTab.rows);
+        this.displayedColumn = dataTab.header;
         if (this.displayedColumnWithActions.length === 1) {
-          this.displayedColumnWithActions.push(...data.header);
+          this.displayedColumnWithActions.push(...dataTab.header);
         }
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
         this.dataSource.filterPredicate = this.filterData;
         this.hasForm = true;
         this.stickyHeader = true;
-      });
+      }else{
+        this.snackBar.open(data.error.message, '', {duration: 2000});
+      }
+    });
   }
   filterData(data: Row, filterValue: string) {
     return Object.values(data.data).join(',').toLowerCase().indexOf(filterValue) !== -1;
@@ -138,11 +144,15 @@ export class TableComponent implements AfterViewInit {
       data: dialogLoad
     });
     dialogRef.afterClosed().subscribe((result: string) => {
-
-      if (result !== 'cancel' && result === 'error') {
+      if (result !== 'cancel' && result.indexOf('Error') === -1) {
         this.paginator._changePageSize(this.paginator.pageSize);
-      } else if (result === 'error') {
-        this.snackBar.open('Une erreur a lieu');
+        this.snackBar.open(result, '' , {
+          duration: 2000
+        });
+      } else if (result.indexOf('Error') !== -1) {
+        this.snackBar.open(result, '' , {
+          duration: 2000
+        });
       }
     });
   }

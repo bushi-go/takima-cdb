@@ -36,11 +36,10 @@ export class DialogComponent {
     onSave(save: string) {
       this.dialogRef.close(save);
     }
-
     onCancel(cancel: string) {
       this.dialogRef.close(cancel);
     }
-    onErrorOnAction(error: string) {
+    onErrorOnAction(error: any) {
       this.dialogRef.close(error);
     }
 }

@@ -17,7 +17,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     if (this.homeStats === undefined) {
       this.apiService.callApi({ method: 'get', url: environment.apiUrl }).subscribe(data => {
-        this.mean = Math.round(data.body.computersCount / data.body.companyCount);
         this.homeStats = {
           computersCount: data.body.computersCount,
           companiesCount: data.body.companyCount,
